@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require('mysql');
-
+const bodyParser = require('body-parser');
 
 
 
@@ -19,6 +19,7 @@ connection.connect((err) => {
 });
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //Creacion de base de datos
 app.get('/createdb', (req,res) =>{
@@ -41,6 +42,19 @@ app.get('/creartabla', (req, res) => {
     })
 })
 
-app.listen(3000,  () => {
-    console.log('Servidor esta corriendo en el puerto 3000');
-});
+
+app.post('/insert', (req, res) => {
+    const { nomape, email, mensaje } = req.body;
+  
+    const sql = `INSERT INTO users (nomape, email, mensaje) VALUES ('${nomape}', '${email}', '${mensaje}')`;
+  
+    connection.query(sql, (err, result) => {
+      if (err) throw err;
+      console.log('Data inserted successfully!');
+      res.send('Data inserted successfully!');
+    });
+  });
+  
+  app.listen(3000, () => {
+    console.log('Server started on port 3000');
+  });
